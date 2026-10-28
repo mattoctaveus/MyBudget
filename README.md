@@ -1,2 +1,1 @@
-# MyBudget
-A budget management application developed in C#.
+https://github.com/mattoctaveus/MyBudget.git
