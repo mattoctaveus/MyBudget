@@ -1,14 +1,10 @@
 // MyBudget
 // Declare variables;
-
 // using System.Net.Http.Headers;
-// CORRECTION: HTTP headers are not needed here.
 using System.Globalization;
 
 // string expenses;
-// CORRECTION: A string cannot store expense amounts for Count/Sum/Average/Max.
 List<decimal> expenses = new();
-
 // decimal amount;
 decimal amount = 0m;
 
@@ -19,25 +15,18 @@ string category = "";
 DateOnly date = default;
 
 // DateTime dateTime;
-// CORRECTION: The assignment needs a date only, so DateOnly is sufficient.
-
 // string product;
-// CORRECTION: A separate product is not required; use description.
-
 // string description;
 string description = "";
 
 // string budget;
-// CORRECTION: A budget is numeric and optional.
 // null means that the user has not set a budget.
 decimal? budget = null;
 
-// ADDED: Running totals required by Feature 1.
+// Running totals required by Feature 1.
 decimal overallTotal = 0m;
 int expenseCount = 0;
 decimal highestSingleExpense = 0m;
-
-// ADDED: Keeps the maximum from your original validation.
 const decimal maximumExpense = 10000m;
 
 // Arrays for categories.
@@ -47,19 +36,16 @@ string[] categories =
     "Transport",
     "Utilities",
     "Entertainment",
-
     // "Healthcare",
     // "Education",
     // "Shopping",
     // "Housing",
     // "Insurance",
     // "Travel",
-    // CORRECTION: These categories are not permitted by the assignment.
-
-    "Other" // CORRECTION: This required category was missing.
+    "Other" 
 };
 
-// ADDED: Store a running total for each allowed category.
+// Store a running total for each allowed category.
 Dictionary<string, decimal> categoryTotals =
     new(StringComparer.OrdinalIgnoreCase);
 
@@ -68,14 +54,13 @@ foreach (string allowedCategory in categories)
     categoryTotals[allowedCategory] = 0m;
 }
 
-// ADDED: Raw string literal.
 Console.WriteLine("""
     =========================
              MyBudget
     =========================
     """);
 
-// ADDED: Range and index-from-end demonstrations.
+// Range and index-from-end demonstrations.
 var firstTwoCategories = categories[..2];
 
 Console.WriteLine(
@@ -83,7 +68,7 @@ Console.WriteLine(
 
 Console.WriteLine($"Last category: {categories[^1]}");
 
-// ADDED: All features must be inside a menu loop.
+// features must be inside a menu loop.
 bool running = true;
 
 while (running)
@@ -99,20 +84,20 @@ while (running)
     Console.Write("Choose an option: ");
     string? menuInput = Console.ReadLine();
 
-    // ADDED: End cleanly if the input stream closes.
+    // End cleanly if the input stream closes.
     if (menuInput is null)
     {
         break;
     }
 
-    // ADDED: Parse the menu choice as an int.
+    //  Parse the menu choice as an int.
     if (!int.TryParse(menuInput, out int menuChoice))
     {
         Console.WriteLine("Enter a number from 1 to 4.");
         continue;
     }
 
-    // ADDED: Required switch statement.
+    // Required switch statement.
     switch (menuChoice)
     {
         // Part 01 — Feature 1: Add an expense.
@@ -120,37 +105,30 @@ while (running)
         {
             bool expenseSaved = false;
 
-            // ADDED: Meaningful try/catch/finally for the add-expense flow.
+            // Meaningful try/catch/finally for the add-expense flow.
             try
             {
                 // Console.WriteLine("Add an expense: ");
                 // Product = Console.ReadLine();
-                // CORRECTION: Product and product are different identifiers.
                 // The assignment asks for a description instead.
                 Console.WriteLine("Add an expense:");
 
-                Console.WriteLine(
-                    "List of categories available:");
+                Console.WriteLine( "List of categories available:");
 
                 // Console.WriteLine(categories[0]);
-                // CORRECTION: The loop below already prints every category.
-
                 // for (i = 0; i < categories.Length; i++)
-                // CORRECTION: Declare i.
                 for (int i = 0; i < categories.Length; i++)
                 {
                     Console.WriteLine($"{i + 1}: {categories[i]}");
                 }
 
                 // Console.WriteLine(
-                //     "Choose how many categories would you like: " + categories);
+                // "Choose how many categories would you like: " + categories);
                 // categories = Console.ReadLine() ?? "";
-                // CORRECTION: Choose one category, not a number of categories.
                 // A string cannot be assigned to the string[] categories.
                 // The category input is handled below.
 
                 // mounts = Parse.ReadLine() ?? "";
-                // CORRECTION: mounts and Parse.ReadLine do not exist.
                 // The amount input is handled below using decimal.TryParse.
 
                 // if (mount <= 0)
@@ -159,35 +137,24 @@ while (running)
                 // }
                 // else
                 //     Console.WriteLine("Continue!");
-                // CORRECTION: Validation must allow retrying.
                 // The amount loop below handles this.
 
                 do
                 {
                     // console.WriteLine("Enter description");
                     // Description = console.ReadLine() ?? "";
-                    // CORRECTION: C# is case-sensitive.
                     Console.Write("Enter description: ");
                     description = ReadRequiredInput().Trim();
                 }
                 // while (string.isNullOderSpace(description));
-                // CORRECTION: Use the actual method name.
                 while (string.IsNullOrWhiteSpace(description));
-
                 // Amount.
-
                 // console.WriteLine("Enter mount: ");
                 // while(!decimal.TryParse(conssole.ReadLine(), out mount)
                 //       || mount <= 0 || mount > 10000);
                 // {
                 //     console.WriteLine("Invalid mount and try again!");
                 // }
-                // CORRECTION:
-                // - Use Console and amount consistently.
-                // - Do not put a semicolon after while (...).
-                // - Read input again after invalid input.
-                // - Catch the custom validation exception and allow retrying.
-
                 while (true)
                 {
                     Console.Write(
@@ -204,7 +171,7 @@ while (running)
 
                     try
                     {
-                        // ADDED: Call the assignment's validation method.
+                        // the assignment's validation method.
                         amount = BudgetRules.ValidateAmount(amount);
 
                         // Preserve the positive/maximum checks from your code.
@@ -229,7 +196,6 @@ while (running)
                     $"Valid amount: {BudgetRules.FormatCurrency(amount)}");
 
                 // Category.
-
                 // console.WriteLine("Enter category: ");
                 // category = console.ReadLine() ?? "";
                 //
@@ -243,10 +209,6 @@ while (running)
                 // {
                 //     console.WriteLine("Invalid category. Try again please!");
                 // }
-                // CORRECTION:
-                // Your loop never reads a new category, so it can loop forever.
-                // StringComparison also needs a capital S.
-                // Use BudgetRules.NormalizeCategory to centralize the rule.
 
                 while (true)
                 {
@@ -270,7 +232,6 @@ while (running)
                 Console.WriteLine($"Valid category: {category}");
 
                 // Validate date.
-
                 // console.WriteLine("Enter date (yyyy-mm-dd): ");
                 // while(!dateTime.TryParseExact(
                 //     console.ReadLine(), "yyyy-mm-dd",
@@ -279,12 +240,6 @@ while (running)
                 // {
                 //     console.WriteLine("Invalid date. Try gain (yyyy-mm-dd)!");
                 // }
-                // CORRECTION:
-                // - Use DateOnly.TryParseExact because date is DateOnly.
-                // - MM means month; mm means minutes in date/time formats.
-                // - Use DateTimeStyles.None with the correct capitalization.
-                // - Remove the semicolon after while (...).
-                // - Handle an empty entry and reject future dates.
 
                 while (true)
                 {
@@ -322,7 +277,7 @@ while (running)
                     break;
                 }
 
-                // ADDED: Optional note with nullable reference types and ?.
+                // Optional note with nullable reference types and ?.
                 Console.Write("Optional note: ");
                 string? note = Console.ReadLine()?.Trim();
 
@@ -331,13 +286,13 @@ while (running)
                     note = null;
                 }
 
-                // ADDED: ?? handles an absent note without printing an empty label.
+                // ?? handles an absent note without printing an empty label.
                 string noteOutput = note ?? "";
 
-                // ADDED: Required amount classification.
+                // Required amount classification.
                 string sizeBand = BudgetRules.ClassifyAmount(amount);
 
-                // ADDED: Calculate totals before updating the stored state.
+                // Calculate totals before updating the stored state.
                 // Decimal arithmetic can overflow, so the outer catch handles it.
                 decimal newOverallTotal = overallTotal + amount;
                 decimal newCategoryTotal = categoryTotals[category] + amount;
@@ -352,14 +307,11 @@ while (running)
                 expenseSaved = true;
 
                 // Display information.
-
                 // console.WriteLine($"Description {description}");
                 Console.WriteLine($"Description: {description}");
 
                 // console.WriteLine($"The expenses are: {expenses}");
-                // CORRECTION: Display the expense count rather than the collection.
                 Console.WriteLine($"Number of expenses: {expenseCount}");
-
                 // console.WriteLine($"The mounts are: {mount}");
                 Console.WriteLine(
                     $"Amount: {BudgetRules.FormatCurrency(amount)}");
@@ -372,7 +324,6 @@ while (running)
 
                 // console.WriteLine($"The time are: {dateTime}");
                 // console.WriteLine($"The products are: {product}");
-                // CORRECTION: Time and product are not required fields.
 
                 Console.WriteLine($"Size band: {sizeBand}");
 
@@ -380,7 +331,9 @@ while (running)
                 {
                     Console.WriteLine($"Note: {noteOutput}");
                 }
+                
             }
+            
             catch (InvalidExpenseException ex)
             {
                 Console.WriteLine($"Expense rejected: {ex.Message}");
@@ -397,7 +350,7 @@ while (running)
             }
             finally
             {
-                // ADDED: Reports the outcome on both success and failure.
+                // Reports the outcome on both success and failure.
                 Console.WriteLine(
                     expenseSaved
                         ? "Expense saved."
@@ -411,15 +364,12 @@ while (running)
         case 2:
         {
             // 90.00m;
-            // CORRECTION: A standalone numeric literal is not a valid statement.
-
             if (expenses.Count > 0)
             {
                 // int numberOfExpenses = expenses.Count;
                 int numberOfExpenses = expenseCount;
 
                 // decimal total = expenses.Sum();
-                // CORRECTION: Sum now works, but use the required running total.
                 decimal total = overallTotal;
 
                 // decimal average = expenses.Average();
@@ -433,16 +383,17 @@ while (running)
                     $"Number of expenses: {numberOfExpenses}");
 
                 // console.WriteLine($"The total are: {total:F2}");
-                Console.WriteLine(
-                    $"Total: {BudgetRules.FormatCurrency(total)}");
-
+               // Console.WriteLine(
+                  //  $"Total: {BudgetRules.FormatCurrency(total)}");
+                   Console.WriteLine($"Total: {total:C2}");
                 // console.WriteLine($"The average are: {average:F2}");
-                Console.WriteLine(
-                    $"Average: {BudgetRules.FormatCurrency(average)}");
-
+                //Console.WriteLine(
+                  //  $"Average: {BudgetRules.FormatCurrency(average)}");
+                    Console.WriteLine($"Average: {average:C2}");
                 // console.WriteLine($"The highest: {highest:F2}");
-                Console.WriteLine(
-                    $"Highest: {BudgetRules.FormatCurrency(highest)}");
+               // Console.WriteLine(
+                  //  $"Highest: {BudgetRules.FormatCurrency(highest)}");
+                  Console.WriteLine($"Highest: {highest:C2}");
             }
             else
             {
@@ -451,25 +402,20 @@ while (running)
             }
 
             // Show the total spent per category.
-
             // foreach (string category in categories);
-            // CORRECTION:
-            // - Remove the semicolon.
-            // - Use a different variable name because category already exists.
             foreach (string categoryName in categories)
             {
                 // decimal total = expenses.Where(
                 //     expenses => expensesCategory.Equals(
                 //         category, stringComparison.OrdinalIgnoreCase))
                 //     .Sum(expenses.amount);
-                // CORRECTION: expenses contains decimals, not objects with
-                // Amount and Category properties. Use the category totals.
                 decimal categoryTotal = categoryTotals[categoryName];
 
                 // console.WriteLine($"{category}: ${total:F2}");
-                Console.WriteLine(
-                    $"{categoryName}: " +
-                    BudgetRules.FormatCurrency(categoryTotal));
+               // Console.WriteLine(
+                   // $"{categoryName}: " +
+                   // BudgetRules.FormatCurrency(categoryTotal));
+                    Console.WriteLine($"{categoryName}: {categoryTotal:C2}");
             }
 
             // Check whether a budget is set.
@@ -482,9 +428,9 @@ while (running)
                 decimal remaining = budget.Value - totalExpenses;
 
                 // console.WriteLine($"Remaining: ${remaining:F2}");
-                Console.WriteLine(
-                    $"Remaining: {BudgetRules.FormatCurrency(remaining)}");
-
+                //Console.WriteLine(
+                  //  $"Remaining: {BudgetRules.FormatCurrency(remaining)}");
+                    Console.WriteLine($"Remaining: {remaining:C2}");
                 // if (remaining > 0)
                 // {
                 //     console.WriteLine("Status: within budget!");
@@ -493,11 +439,22 @@ while (running)
                 //     console.WriteLine("Status: budget reached!");
                 // else
                 //     console.WriteLine("Status: over budget!");
-                // CORRECTION: Use the required method and keep remaining
                 // inside the scope where it was declared.
-                Console.WriteLine(
-                    $"Status: {BudgetRules.BudgetStatus(
-                        remaining, budget.Value)}");
+               // Console.WriteLine(
+                 //   $"Status: {BudgetRules.BudgetStatus(
+                  //      remaining, budget.Value)}");
+                   if (remaining < 0m)
+               {
+                    Console.WriteLine("Status: Over budget");
+                }
+                    else if (remaining < budget.Value * 0.10m)
+               {
+                   Console.WriteLine("Status: Almost out");
+               }
+              else
+              {
+                  Console.WriteLine("Status: On track");
+               }
             }
 
             // if (expenses.Count == 0);
@@ -508,11 +465,6 @@ while (running)
             //     decimal average = total / expenses.Count;
             // }
             // console.WriteLine($"Average expenses are: ${average}");
-            // CORRECTION:
-            // - The semicolon breaks the if/else.
-            // - average was outside its scope.
-            // - The earlier if/else already handles no expenses safely.
-
             break;
         }
 
@@ -525,10 +477,6 @@ while (running)
             // {
             //     console.WriteLine("Invalid budget. Try again!");
             // }
-            // CORRECTION:
-            // - The || condition belongs outside TryParse.
-            // - Parse into a decimal, then assign it to decimal? budget.
-            // - Re-prompt on every attempt.
 
             while (true)
             {
@@ -553,37 +501,40 @@ while (running)
                 budget = enteredBudget;
 
                 // console.WriteLine("Your budget is: " + budget);
-                Console.WriteLine(
-                    $"Your budget is: " +
-                    BudgetRules.FormatCurrency(budget.Value));
-
+               // Console.WriteLine(
+                //    $"Your budget is: " +
+                  //  BudgetRules.FormatCurrency(budget.Value));
+                    Console.WriteLine($"Your budget is: {budget.Value:C2}");
                 decimal remaining = budget.Value - overallTotal;
 
-                // string BudgetStatus;
+                 //string BudgetStatus;
                 //
-                // if (remaining < 0)
-                // {
-                //     console.WriteLine("Over budget: " + BudgetStatus);
-                // }
-                // else if (remaining < budget * 0.10m);
-                // {
-                //     console.WriteLine("Almost out: " + BudgetStatus);
-                // }
-                // else
-                // {
-                //     Console.WriteLine("on track: " + BudgetStatus);
-                // }
-                // Console.WriteLine($"Budget status: ${BudgetStatus}");
-                // CORRECTION:
-                // - BudgetStatus was never assigned.
-                // - The semicolon breaks the else-if structure.
-                // - Call the required method.
-                // - A status string does not need a currency symbol.
+                // Declare a variable to store the status.
+                 string budgetStatus;
 
-                string budgetStatus =
-                    BudgetRules.BudgetStatus(remaining, budget.Value);
+                 if (remaining < 0)
+                {
+                 budgetStatus = "Over budget";
 
-                Console.WriteLine($"Budget status: {budgetStatus}");
+                Console.WriteLine("Over budget: " + budgetStatus);
+                }
+               else if (remaining < budget.Value * 0.10m)
+              {
+                 budgetStatus = "Almost out";
+                 Console.WriteLine("Almost out: " + budgetStatus);
+             }
+          else
+            {
+                budgetStatus = "On track";
+                Console.WriteLine("on track: " + budgetStatus);
+             }
+
+               Console.WriteLine($"Budget status: {budgetStatus}");
+
+                //------------------------
+             // string budgetStatus =
+                 //   BudgetRules.BudgetStatus(remaining, budget.Value);
+                // Console.WriteLine($"Budget status: {budgetStatus}");
 
                 break;
             }
@@ -604,13 +555,6 @@ while (running)
             //     break;
             // }
             // console.WriteLine("Continue the program, let's go!");
-            // CORRECTION:
-            // - The old loop never ended.
-            // - choice was outside its scope.
-            // - The if had an incorrect trailing semicolon.
-            // - break was outside a loop or switch in your original code.
-            // The menu now provides the exit option.
-
             running = false;
             break;
         }
@@ -626,11 +570,76 @@ while (running)
 // Console.WriteLine("Thank you for using the expensess traker! Goodbye!");
 Console.WriteLine("Thank you for using the expense tracker! Goodbye!");
 
-// ADDED: A local input helper.
-// Empty input is returned normally so each field can validate it.
-// A closed input stream stops the add-expense flow instead of looping forever.
 static string ReadRequiredInput()
 {
     return Console.ReadLine()
         ?? throw new EndOfStreamException("Input is no longer available.");
+}
+
+// These definitions make the existing calls work when running this file on its own.
+public static class BudgetRules
+{
+    public static decimal ValidateAmount(decimal amount)
+    {
+        // Use the same realistic maximum already specified in the program.
+        if (amount <= 0m || amount > 10000m)
+        {
+            throw new InvalidExpenseException(
+                "Amount must be greater than zero and no more than 10000.");
+        }
+
+        return amount;
+    }
+
+    public static string FormatCurrency(decimal amount)
+    {
+        return amount.ToString("C2", CultureInfo.GetCultureInfo("en-CA"));
+    }
+
+    // Match the nullable input signature and safely handle null.
+    public static string? NormalizeCategory(string? input)
+    {
+        return input?.Trim().ToLowerInvariant() switch
+        {
+            "food" => "Food",
+            "transport" => "Transport",
+            "utilities" => "Utilities",
+            "entertainment" => "Entertainment",
+            "other" => "Other",
+            _ => null
+        };
+    }
+
+    public static string ClassifyAmount(decimal amount)
+    {
+        // Small: below 50; Medium: 50 to below 200; Large: 200 or more.
+        return amount switch
+        {
+            < 50m => "Small",
+            < 200m => "Medium",
+            _ => "Large"
+        };
+    }
+
+    public static string BudgetStatus(decimal remaining, decimal monthlyLimit)
+    {
+        if (remaining < 0m)
+        {
+            return "Over budget";
+        }
+
+        if (remaining < monthlyLimit * 0.10m)
+        {
+            return "Almost out";
+        }
+
+        return "On track";
+    }
+}
+
+public class InvalidExpenseException : Exception
+{
+    public InvalidExpenseException(string message) : base(message)
+    {
+    }
 }
